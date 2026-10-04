@@ -23,7 +23,7 @@
         const SUPABASE_KEY = "sb_publishable_Vl18fW-IfHmiNdwtOAFygQ_yHDckGA7";
         
         // Menyalakan koneksi ke Supabase
-        const supabase = @supabase/supabaseJs.createClient(SUPABASE_URL, SUPABASE_KEY);
+            const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // 2. FUNGSI UNTUK MENGIRIM NAMA KE SUPABASE
         async function simpanKeSupabase() {
