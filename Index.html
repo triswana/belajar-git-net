@@ -2,9 +2,10 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buku Tamu Saya</title>
-    <!-- Ini adalah script sakti agar website bisa ngobrol dengan Supabase -->
-    <script src="https://unpkg.com"></script>
+    <!-- Script Supabase resmi versi terbaru -->
+    <script src="https://jsdelivr.net"></script>
 </head>
 <body>
     <h1>Buku Tamu Website</h1>
@@ -17,15 +18,14 @@
     <ul id="daftarTamu"></ul>
 
     <script>
-            <script>
-        // 1. ISI DENGAN KUNCI SUPABASE ANDA SEPERTI DI LANGKAH 4
+        // ISI DENGAN KUNCI SUPABASE ANDA (Pastikan di dalam tanda kutip "")
         const SUPABASE_URL = "https://wprvdlbfsurjytgikokp.supabase.co/rest/v1/";
         const SUPABASE_KEY = "sb_publishable_Vl18fW-IfHmiNdwtOAFygQ_yHDckGA7";
         
-        // Menyalakan koneksi ke Supabase
-            const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Menyalakan koneksi ke Supabase (Format terbaru yang aman dari error)
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 2. FUNGSI UNTUK MENGIRIM NAMA KE SUPABASE
+        // FUNGSI UNTUK MENGIRIM NAMA KE SUPABASE
         async function simpanKeSupabase() {
             const namaInput = document.getElementById('namaTamu').value;
             
@@ -34,7 +34,7 @@
                 return;
             }
 
-            // Perintah untuk memasukkan data ke tabel 'para_tamu'
+            // Memasukkan data ke tabel 'para_tamu'
             const { data, error } = await supabase
                 .from('para_tamu')
                 .insert([{ nama: namaInput }]);
@@ -48,7 +48,7 @@
             }
         }
 
-        // 3. FUNGSI UNTUK MENAMPILKAN DAFTAR TAMU DARI SUPABASE
+        // FUNGSI UNTUK MENAMPILKAN DAFTAR TAMU DARI SUPABASE
         async function tampilkanDaftarTamu() {
             const { data: semuaTamu, error } = await supabase
                 .from('para_tamu')
@@ -58,7 +58,6 @@
                 const listData = document.getElementById('daftarTamu');
                 listData.innerHTML = ""; // Bersihkan daftar lama
                 
-                // Susun nama-nama tamu ke dalam list
                 semuaTamu.forEach(tamu => {
                     const li = document.createElement('li');
                     li.textContent = tamu.nama;
@@ -67,10 +66,8 @@
             }
         }
 
-        // Jalankan fungsi ini secara otomatis saat halaman pertama kali dibuka
+        // Jalankan otomatis saat halaman dibuka
         tampilkanDaftarTamu();
-    </script>
-
     </script>
 </body>
 </html>
