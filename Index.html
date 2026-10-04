@@ -33,10 +33,21 @@
     };
 
     async function load() {
-      const res = await fetch(`${SUPABASE_URL}?select=nama&order=created_at.desc`, { headers });
-      const data = await res.json();
-      document.getElementById('daftar').innerHTML = data.map(item => `<li>${item.nama}</li>`).join('');
+  try {
+    const res = await fetch(`${SUPABASE_URL}?select=nama&order=created_at.desc`, { headers });
+    const data = await res.json();
+
+    // Cek jika response bukan array (berarti ada error dari Supabase)
+    if (!Array.isArray(data)) {
+      console.error("Error dari Supabase:", data);
+      return;
     }
+
+    document.getElementById('daftar').innerHTML = data.map(item => `<li>${item.nama}</li>`).join('');
+  } catch (err) {
+    console.error("Gagal koneksi:", err);
+  }
+}
 
     document.getElementById('form').addEventListener('submit', async (e) => {
       e.preventDefault();
