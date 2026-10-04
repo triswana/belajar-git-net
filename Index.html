@@ -1,2 +1,76 @@
-<h1>Halo, Ini Website Pertama Saya!</h1>
-<p>Dibuat tanpa coding ribet.</p>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Buku Tamu Saya</title>
+    <!-- Ini adalah script sakti agar website bisa ngobrol dengan Supabase -->
+    <script src="https://unpkg.com"></script>
+</head>
+<body>
+    <h1>Buku Tamu Website</h1>
+    
+    <!-- Formulir untuk mengetik nama -->
+    <input type="text" id="namaTamu" placeholder="Ketik nama Anda di sini...">
+    <button onclick="simpanKeSupabase()">Kirim Nama</button>
+
+    <h3>Daftar Tamu yang Hadir:</h3>
+    <ul id="daftarTamu"></ul>
+
+    <script>
+            <script>
+        // 1. ISI DENGAN KUNCI SUPABASE ANDA SEPERTI DI LANGKAH 4
+        const SUPABASE_URL = "https://wprvdlbfsurjytgikokp.supabase.co/rest/v1/";
+        const SUPABASE_KEY = "sb_publishable_Vl18fW-IfHmiNdwtOAFygQ_yHDckGA7";
+        
+        // Menyalakan koneksi ke Supabase
+        const supabase = @supabase/supabaseJs.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // 2. FUNGSI UNTUK MENGIRIM NAMA KE SUPABASE
+        async function simpanKeSupabase() {
+            const namaInput = document.getElementById('namaTamu').value;
+            
+            if(namaInput === "") {
+                alert("Ketik namanya dulu ya!");
+                return;
+            }
+
+            // Perintah untuk memasukkan data ke tabel 'para_tamu'
+            const { data, error } = await supabase
+                .from('para_tamu')
+                .insert([{ nama: namaInput }]);
+
+            if (error) {
+                alert("Gagal menyimpan: " + error.message);
+            } else {
+                alert("Hore! Nama " + namaInput + " berhasil disimpan ke database!");
+                document.getElementById('namaTamu').value = ""; // Kosongkan kotak teks
+                tampilkanDaftarTamu(); // Perbarui daftar di layar
+            }
+        }
+
+        // 3. FUNGSI UNTUK MENAMPILKAN DAFTAR TAMU DARI SUPABASE
+        async function tampilkanDaftarTamu() {
+            const { data: semuaTamu, error } = await supabase
+                .from('para_tamu')
+                .select('*');
+
+            if (!error) {
+                const listData = document.getElementById('daftarTamu');
+                listData.innerHTML = ""; // Bersihkan daftar lama
+                
+                // Susun nama-nama tamu ke dalam list
+                semuaTamu.forEach(tamu => {
+                    const li = document.createElement('li');
+                    li.textContent = tamu.nama;
+                    listData.appendChild(li);
+                });
+            }
+        }
+
+        // Jalankan fungsi ini secara otomatis saat halaman pertama kali dibuka
+        tampilkanDaftarTamu();
+    </script>
+
+    </script>
+</body>
+</html>
