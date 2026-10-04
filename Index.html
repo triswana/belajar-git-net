@@ -8,6 +8,8 @@
     input, button { width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; }
     li { margin-bottom: 5px; }
   </style>
+  <!-- Library Resmi Supabase via CDN (Tanpa NPM/Terminal) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -22,52 +24,42 @@
   <ul id="daftar"></ul>
 
   <script>
-    // 1. PASTIKAN URL Hanya Sampai "...supabase.co/rest/v1"
-    const SUPABASE_BASE_URL = "https://wprvdlbfsurjytgikokp.supabase.co/rest/v1";
-    
-    // 2. TEMPEL KUNCI 'anon' 'public' LENGKAP DI SINI (Ketik ulang/salin dari Settings > API)
-    const SUPABASE_KEY = "sb_publishable_Vl18fW-IfHmiNdwtOAFygQ_yHDckGA7";
+    const SUPABASE_URL = "https://wprvdlbfsurjytgikokp.supabase.co";
+    const PUBLISHABLE_KEY = "sb_publishable_Vl18fW-IfHmiNdwtOAFygQ_yHDckGA7";
 
-    const headers = {
-      "apikey": SUPABASE_KEY.trim(),
-      "Authorization": `Bearer ${SUPABASE_KEY.trim()}`,
-      "Content-Type": "application/json"
-    };
+    // Inisialisasi client Supabase dengan Publishable Key
+    const supabaseClient = supabase.createClient(SUPABASE_URL, PUBLISHABLE_KEY);
 
+    // Ambil data dari tabel buku_tamu
     async function load() {
-      try {
-        // Panggil endpoint tabel
-        const res = await fetch(`${SUPABASE_BASE_URL}/buku_tamu?select=nama&order=created_at.desc`, { headers });
-        const data = await res.json();
+      const { data, error } = await supabaseClient
+        .from('buku_tamu')
+        .select('nama')
+        .order('created_at', { ascending: false });
 
-        if (!res.ok) {
-          console.error("Detail Error Supabase:", data);
-          alert(`Gagal (Status ${res.status}): ${data.message || JSON.stringify(data)}`);
-          return;
-        }
-
-        document.getElementById('daftar').innerHTML = data.map(item => `<li>${item.nama}</li>`).join('');
-      } catch (err) {
-        console.error("Gagal koneksi:", err);
+      if (error) {
+        console.error("Error:", error);
+        document.getElementById('daftar').innerHTML = `<li style="color:red">Error: ${error.message}</li>`;
+        return;
       }
+
+      document.getElementById('daftar').innerHTML = data.map(item => `<li>${item.nama}</li>`).join('');
     }
 
+    // Simpan data ke tabel buku_tamu
     document.getElementById('form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const nama = document.getElementById('nama').value;
-      
-      const res = await fetch(`${SUPABASE_BASE_URL}/buku_tamu`, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({ nama })
-      });
 
-      if (res.ok) {
+      const { error } = await supabaseClient
+        .from('buku_tamu')
+        .insert([{ nama }]);
+
+      if (!error) {
         document.getElementById('nama').value = '';
         load();
       } else {
-        const errData = await res.json();
-        alert(`Gagal Simpan: ${errData.message || 'Cek RLS / API Key'}`);
+        alert("Gagal menyimpan: " + error.message);
       }
     });
 
