@@ -37,12 +37,12 @@
             // Memasukkan data ke tabel 'para_tamu'
             const { data, error } = await supabase
                 .from('para_tamu')
-                .insert([{ nama: namaInput }]);
+                .insert([{ nama: nama }]);
 
             if (error) {
                 alert("Gagal menyimpan: " + error.message);
             } else {
-                alert("Hore! Nama " + namaInput + " berhasil disimpan ke database!");
+                alert("Hore! Nama " + nama + " berhasil disimpan ke database!");
                 document.getElementById('namaTamu').value = ""; // Kosongkan kotak teks
                 tampilkanDaftarTamu(); // Perbarui daftar di layar
             }
