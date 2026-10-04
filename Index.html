@@ -8,7 +8,7 @@
 <script src="supabase.js"></script>
 </head>
 <body>
-    <h1>Buku Tamu Website</h1>
+    <h1>Buku Tamu Website Acara Kawin</h1>
     
     <!-- Formulir untuk mengetik nama -->
     <input type="text" id="namaTamu" placeholder="Ketik nama Anda di sini...">
@@ -37,12 +37,12 @@
             // Memasukkan data ke tabel 'para_tamu'
             const { data, error } = await supabase
                 .from('para_tamu')
-                .insert([{ nama: nama }]);
+                .insert([{ nama: namaInput }]);
 
             if (error) {
                 alert("Gagal menyimpan: " + error.message);
             } else {
-                alert("Hore! Nama " + nama + " berhasil disimpan ke database!");
+                alert("Hore! Nama " + namaInput + " berhasil disimpan ke database!");
                 document.getElementById('namaTamu').value = ""; // Kosongkan kotak teks
                 tampilkanDaftarTamu(); // Perbarui daftar di layar
             }
